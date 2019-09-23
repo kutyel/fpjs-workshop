@@ -33,7 +33,7 @@ describe('Monads', () => {
         return `logged ${x}`
       })
     const ex2 = identity // TODO:
-    expect(ex2().unsafePerformIO()).toBe('logged monads.js')
+    expect(ex2().run()).toBe('logged monads.js')
   })
 
   // Exercise 3

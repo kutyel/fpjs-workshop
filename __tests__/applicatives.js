@@ -55,6 +55,6 @@ describe('Applicative Functors', () => {
     const game = curry((p1, p2) => `${p1} vs ${p2}`)
     //  ex4 :: IO String
     const ex4 = identity // TODO:
-    expect(ex4.unsafePerformIO()).toBe('toby vs sally')
+    expect(ex4.run()).toBe('toby vs sally')
   })
 })

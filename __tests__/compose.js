@@ -60,7 +60,11 @@ const CARS = [
 describe('Compose', () => {
   // Exercise 1
   test('Use compose() to rewrite the function below. Hint: prop() is curried.', () => {
-    const isLastInStock = identity // TODO:
+    // TODO: isLastInStock :: [Car] -> Boolean
+    const isLastInStock = cars => {
+      const lastCar = last(cars)
+      return prop('in_stock', lastCar)
+    }
     expect(isLastInStock(CARS)).toBe(false)
   })
 
@@ -73,7 +77,11 @@ describe('Compose', () => {
   // Exercise 3:
   test('Use the helper function _average to refactor averageDollarValue as a composition.', () => {
     const _average = xs => reduce(add, 0, xs) / xs.length // <- LEAVE BE
-    const averageDollarValue = identity // TODO:
+    // TODO: averageDollarValue :: [Car] -> Int
+    const averageDollarValue = cars => {
+      const dollarValues = map(c => c.dollar_value, cars)
+      return average(dollarValues)
+    }
     expect(averageDollarValue(CARS)).toBe(790700)
   })
 
@@ -106,7 +114,12 @@ describe('Compose', () => {
   // Bonus 2:
   test('Refactor to pointfree. Hint: you can use flip().', () => {
     const _append = flip(concat)
-    const fastestCar = identity // TODO:
+    // TODO: fastestCar :: [Car] -> String
+    const fastestCar = cars => {
+      const sorted = sortBy(car => car.horsepower, cars)
+      const fastest = last(sorted)
+      return concat(fastest.name, ' is the fastest')
+    }
     expect(fastestCar(CARS)).toBe('Aston Martin One-77 is the fastest')
   })
 })
