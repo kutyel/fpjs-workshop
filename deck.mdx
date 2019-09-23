@@ -1,0 +1,26 @@
+import { Image, Notes } from 'mdx-deck'
+import { dark } from 'mdx-deck/themes'
+import Layout, { Split } from './layout'
+import codeSurfer from 'prism-react-renderer/themes/nightOwl'
+export { components } from 'mdx-deck-code-surfer'
+export const theme = {
+  ...dark,
+  codeSurfer,
+  monospace: '"Dank Mono", "Fira Code", Consolas, "Roboto Mono", monospace',
+  colors: {
+    text: 'rgb(214, 222, 235)',
+    code: 'rgb(130, 170, 255)',
+    link: 'rgb(128, 203, 196)',
+    background: 'rgb(1, 22, 39)',
+  },
+}
+
+export default Layout
+
+`$ Hello FP folks!`
+
+---
+
+export default Layout
+
+# Thanks! 😸

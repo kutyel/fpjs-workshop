@@ -1,0 +1,49 @@
+{
+  "name": "fpjs-workshop",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "⚡️ My workshop to teach FP principles in JavaScript",
+  "main": "deck.mdx",
+  "scripts": {
+    "test": "jest",
+    "start": "mdx-deck deck.mdx",
+    "build": "mdx-deck build deck.mdx --no-html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kutyel/fpjs-workshop.git"
+  },
+  "keywords": [
+    "fp",
+    "reason",
+    "reasonml"
+  ],
+  "author": "kutyel <flaviocorpa@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kutyel/fpjs-workshop/issues"
+  },
+  "homepage": "https://github.com/kutyel/fpjs-workshop#readme",
+  "devDependencies": {
+    "@babel/core": "^7.6.0",
+    "@babel/preset-env": "^7.6.0",
+    "@emotion/core": "^10.0.17",
+    "@emotion/styled": "^10.0.17",
+    "babel-jest": "^24.9.0",
+    "file-loader": "^2.0.0",
+    "jest": "^24.9.0",
+    "mdx-deck": "^1.7.7",
+    "mdx-deck-code-surfer": "^0.5.3"
+  },
+  "dependencies": {
+    "accounting": "^0.4.1",
+    "crocks": "^0.12.4",
+    "data.task": "^3.1.2",
+    "ramda": "^0.26.1"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    }
+  }
+}
