@@ -5,7 +5,7 @@
   "description": "⚡️ My workshop to teach FP principles in JavaScript",
   "main": "deck.mdx",
   "scripts": {
-    "test": "jest",
+    "test": "jest --watchAll",
     "start": "mdx-deck deck.mdx",
     "build": "mdx-deck build deck.mdx --no-html"
   },

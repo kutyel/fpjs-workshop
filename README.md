@@ -16,7 +16,7 @@ $ git clone https://github.com/kutyel/fpjs-workshop.git
 $ cd fpjs-workshop
 $ npm install
 ...
-$ npm test -- -w
+$ npm test
 ```
 
 See the breaking tests and follow along! 🚀
