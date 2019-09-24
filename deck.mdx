@@ -56,6 +56,14 @@ export default Layout
 
 export default Layout
 
+### `Functor` is all about function application! 🤯
+
+<img src={require('file-loader!./img/functormap.png')} />
+
+---
+
+export default Layout
+
 ```js My First Functor
 /**
  * Our first functor! 🎉
@@ -130,9 +138,162 @@ Maybe.of({ name: 'Dinah', age: 14 })
 
 export default Layout
 
+```js
+// safeHead :: [a] -> Maybe(a)
+const safeHead = xs => Maybe.of(xs[0])
+
+// streetName :: Object -> Maybe String
+const streetName = compose(
+  map(prop('street')),
+  safeHead,
+  prop('addresses')
+)
+
+streetName({ addresses: [] })
+// > Nothing
+
+streetName({ addresses: [{ street: 'Shady Ln.', number: 4201 }] })
+// > Just('Shady Ln.')
+```
+
+---
+
+export default Layout
+
+```js Signaling failure
+// withdraw :: Number -> Account -> Maybe(Account)
+const withdraw = curry((amount, { balance }) =>
+  Maybe.of(balance >= amount ? { balance: balance - amount } : null)
+)
+
+// This function is hypothetical, not implemented here... nor anywhere else.
+// updateLedger :: Account -> Account
+const updateLedger = account => account
+
+// remainingBalance :: Account -> String
+const remainingBalance = ({ balance }) => `Your balance is $${balance}`
+
+// finishTransaction :: Account -> String
+const finishTransaction = compose(
+  remainingBalance,
+  updateLedger
+)
+
+// getTwenty :: Account -> Maybe(String)
+const getTwenty = compose(
+  map(finishTransaction),
+  withdraw(20)
+)
+
+getTwenty({ balance: 200.0 })
+// Just('Your balance is $180')
+
+getTwenty({ balance: 10.0 })
+// Nothing
+----
+* > Let's have a look
+1:4 > `withdraw` will tip its nose at us and return Nothing if we're short on cash
+5:11 > some helper functions
+12:17 > if the withdraw fails, then map will sever the rest of our computation
+18:23 > this is the important bit
+24:29 > it works as expected! 🎉
+```
+
+---
+
+What if we want to find out why something failed with `Maybe`? 🤔
+
+---
+
+export default Layout
+
 ### Famous Functors: Either
 
 `data Either = Left a | Right b`
+
+---
+
+export default Layout
+
+```js
+import Either from 'crocks/Either'
+
+const { Left, Right } = Either
+
+Either.of('rain').map(str => `b${str}`)
+// Right('brain')
+
+Left('rain').map(str => `It's gonna ${str}, better bring your umbrella!`)
+// Left('rain')
+
+Either.of({ host: 'localhost', port: 80 }).map(prop('host'))
+// Right('localhost')
+
+Left('rolls eyes...').map(prop('host'))
+// Left('rolls eyes...')
+```
+
+---
+
+export default Layout
+
+```js
+import Either from 'crocks/Either'
+import moment from 'moment'
+
+const { Left, Right } = Either
+
+// getAge :: Date -> User -> Either(String, Number)
+const getAge = curry((now, user) => {
+  const birthDate = moment(user.birthDate, 'YYYY-MM-DD')
+
+  return birthDate.isValid()
+    ? Either.of(now.diff(birthDate, 'years'))
+    : Left('Birth date could not be parsed')
+})
+
+getAge(moment(), { birthDate: '2005-12-12' })
+// Right(9)
+
+getAge(moment(), { birthDate: 'July 4, 2001' })
+// Left('Birth date could not be parsed')
+```
+
+---
+
+export default Layout
+
+### Let's talk now about...
+
+<Appear>
+  <h1>Side Effects! 🙀</h1>
+</Appear>
+
+---
+
+export default Layout
+
+```js
+// ioWindow :: IO Window
+const ioWindow = IO.of(() => window)
+
+ioWindow.map(win => win.innerWidth)
+// IO(1430)
+
+ioWindow
+  .map(prop('location'))
+  .map(prop('href'))
+  .map(split('/'))
+// IO(['http:', '', 'localhost:8000', 'blog', 'posts'])
+
+// $ :: String -> IO [DOM]
+const $ = selector => IO.of(() => document.querySelectorAll(selector))
+
+$('#myDiv')
+  .map(head)
+  .map(div => div.innerHTML)
+// IO('I am some inner html')
+```
 
 ---
 

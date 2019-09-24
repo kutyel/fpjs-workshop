@@ -74,6 +74,7 @@ describe('Functors', () => {
       prop('name')
     )
     const checkActive = user => (user.active ? Right(user) : Left('Your account is not active'))
+    // Hint: either :: Either c a ~> ((c -> b), (a -> b)) -> b
     // TODO: eitherWelcome :: User -> Either String String
     const eitherWelcome = identity
     expect(
