@@ -1,6 +1,6 @@
 import Task from 'data.task'
 import { Identity, IO, Maybe, Either, either, getProp } from 'crocks'
-import { add, curry, compose, concat, prop, map, head, toUpper, identity } from 'ramda'
+import { add, compose, concat, prop, map, head, toUpper, identity } from 'ramda'
 
 const { Just, Nothing } = Maybe
 const { Left, Right } = Either
@@ -74,7 +74,6 @@ describe('Functors', () => {
       prop('name')
     )
     const checkActive = user => (user.active ? Right(user) : Left('Your account is not active'))
-    // Hint: either :: Either c a ~> ((c -> b), (a -> b)) -> b
     // TODO: eitherWelcome :: User -> Either String String
     const eitherWelcome = identity
     expect(
@@ -96,17 +95,19 @@ describe('Functors', () => {
 
   // Exercise 8
   test('Use ex7 above and Either as a functor to save the user if they are valid or return the error message string.', () => {
-    // validateUser :: (User -> Either String ()) -> User -> Either String User
-    const validateUser = curry((validate, user) => validate(user).map(_ => user))
     // save :: User -> IO User
     const save = user => IO.of(() => ({ ...user, saved: true }))
 
+    // TODO: validateName :: User -> Either String ()
+    const validateName = identity
+
     // TODO: register :: User -> IO String
+    // HINT: either :: Either c a ~> ((c -> b), (a -> b)) -> b
     const register = compose(
       identity, // <- hint: modify this line!
-      validateUser(validateName)
+      validateName
     )
-    expect(register('flavio').run()).toBe('flavio-saved')
-    expect(register('fla').run()).toBe('You need > 3')
+    register('flavio').run(res => expect(res).toBe('flavio-saved'))
+    register('fla').run(error => expect(error).toBe('You need > 3!!!'))
   })
 })
