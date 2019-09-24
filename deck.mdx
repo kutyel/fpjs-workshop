@@ -33,6 +33,12 @@ export default Layout
 
 export default Layout
 
+`https://github.com/kutyel/fpjs-workshop`
+
+---
+
+export default Layout
+
 ## Functors
 
 <Appear>
@@ -201,6 +207,8 @@ getTwenty({ balance: 10.0 })
 
 ---
 
+export default Layout
+
 What if we want to find out why something failed with `Maybe`? 🤔
 
 ---
@@ -299,13 +307,41 @@ $('#myDiv')
 
 export default Layout
 
+### Exercise time! 🏋🏼‍♂️
+
+---
+
+export default Layout
+
 ## Applicative Functors
 
 <Appear>
-  <p>first</p>
-  <p>second</p>
-  <p>third</p>
+  <p>
+    <code>ap :: Applicative f => f (a -> b) -> f a -> f b</code>
+  </p>
+  <p>
+    <strong>Identity law: </strong>
+    <code>A.of(id).ap(v) === v</code>
+  </p>
+  <p>
+    <strong>Composition law: </strong>
+    <code>A.of(compose).ap(u).ap(v).ap(w) === u.ap(v.ap(w))</code>
+  </p>
+  <p>
+    <strong>Homomorphism law: </strong>
+    <code>A.of(f).ap(A.of(x)) === A.of(f(x))</code>
+  </p>
+  <p>
+    <strong>Interchange law: </strong>
+    <code>v.ap(A.of(x)) === A.of(f => f(x)).ap(v)</code>
+  </p>
 </Appear>
+
+---
+
+export default Layout
+
+### Moar exercises! 🤸🏼‍♀️
 
 ---
 
@@ -314,10 +350,34 @@ export default Layout
 ## Monads
 
 <Appear>
-  <p>first</p>
-  <p>second</p>
-  <p>third</p>
+  <p>
+    <code>flatMap :: Monad m => (a -> m b) -> m a -> m b</code>
+  </p>
+  <p>
+    <code>const flatMap = curry((f, m) => m.map(f).join())</code>
+  </p>
+  <p>
+    <code>const mcompose = (f, g) => compose(chain(f), g)</code>
+  </p>
+  <p>
+    <strong>Left identity law: </strong>
+    <code>mcompose(M, f) === f</code>
+  </p>
+  <p>
+    <strong>Right identity law: </strong>
+    <code>mcompose(f, M) === f</code>
+  </p>
+  <p>
+    <strong>Associativity law: </strong>
+    <code>mcompose(mcompose(f, g), h) === mcompose(f, mcompose(g, h))</code>
+  </p>
 </Appear>
+
+---
+
+export default Layout
+
+### Last exercises! 🚀🚀🚀
 
 ---
 
