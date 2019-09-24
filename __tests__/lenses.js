@@ -1,4 +1,4 @@
-import { lensPath, over, inc, dec, not } from 'ramda'
+import { compose, lensPath, over, inc, dec, not } from 'ramda'
 
 const LIKED = 'LIKED'
 const DISLIKED = 'DISLIKED'
@@ -40,20 +40,18 @@ const reducer = (state = initialState, { type, index }) => {
 describe('Lenses', () => {
   it('Reducer -> LIKE feature should work', () => {
     const index = 1
-    const action = { type: LIKED, index }
     expect(initialState[index].likes.count).toBe(42)
     expect(initialState[index].user_has_liked).toBe(false)
-    const newState = reducer(initialState, action)
+    const newState = reducer(initialState, { type: LIKED, index })
     expect(newState[index].likes.count).toBe(43)
     expect(newState[index].user_has_liked).toBe(true)
   })
 
   it('Reducer -> DISLIKE feature should work', () => {
     const index = 2
-    const action = { type: DISLIKED, index }
     expect(initialState[index].likes.count).toBe(5)
     expect(initialState[index].user_has_liked).toBe(true)
-    const newState = reducer(initialState, action)
+    const newState = reducer(initialState, { type: DISLIKED, index })
     expect(newState[index].likes.count).toBe(4)
     expect(newState[index].user_has_liked).toBe(false)
   })
