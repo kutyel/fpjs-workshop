@@ -6,7 +6,7 @@
 
 ### Part 2) [Lenses](https://functional-lenses.now.sh/#0)! 👓
 
-### Part 3) ADT's: Maybe, Either, IO/Task... 📦
+### Part 3) ADTs, Functor, Applicative & Monad! 🙊
 
 ## Installation
 

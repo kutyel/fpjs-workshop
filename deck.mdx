@@ -1,4 +1,4 @@
-import { Image, Notes } from 'mdx-deck'
+import { Image, Notes, Appear } from 'mdx-deck'
 import { dark } from 'mdx-deck/themes'
 import Layout, { Split } from './layout'
 import codeSurfer from 'prism-react-renderer/themes/nightOwl'
@@ -15,9 +15,148 @@ export const theme = {
   },
 }
 
+<Image src={require('file-loader!./img/lambda-background.png')} />
+
+---
+
 export default Layout
 
-`$ Hello FP folks!`
+# λ Functional Programming Principles in JavaScript (a Workshop)
+
+---
+
+export default Layout
+
+`λ -> putStrLn ("Hello, FP folks!")`
+
+---
+
+export default Layout
+
+## Functors
+
+<Appear>
+  <p>
+    <code>map :: Functor f => (a -> b) -> f a -> f b</code>
+  </p>
+  <p>
+    <code>const map = curry((f, fx) => fx.map(f))</code>
+  </p>
+  <p>
+    <strong>Identity law: </strong>
+    <code>map(id) === id</code>
+  </p>
+  <p>
+    <strong>Composition law: </strong>
+    <code>compose(map(f), map(g)) === map(compose(f, g))</code>
+  </p>
+</Appear>
+
+---
+
+export default Layout
+
+```js My First Functor
+/**
+ * Our first functor! 🎉
+ */
+const Box = x => ({
+  map: f => Box(f(x)),
+  inspect: () => `Box(${x})`,
+})
+
+Box.of = Box
+----
+* > Our first functor!
+5 > This is the important part, the `map` function! 🗺
+6 > This is for Node.js to let us see the inner value 👀
+9 > `of` is just an optional constructor function
+```
+
+---
+
+export default Layout
+
+```js Things we can do with our Box
+Box(2).map(two => two + 2)
+// > Box(4)
+
+Box('flamethrowers').map(s => s.toUpperCase())
+// > Box(FLAMETHROWERS)
+
+Box.of('bombs')
+  .map(append(' away'))
+  .map(prop('length'))
+// > Box(10)
+```
+
+---
+
+export default Layout
+
+Our `Box` does nothing special... in fact it's called `Identity`!
+
+---
+
+export default Layout
+
+### Famous Functors: Maybe
+
+`data Maybe = Nothing | Just a`
+
+---
+
+export default Layout
+
+```js Things we can do with Maybe
+Maybe.of('Malkovich Malkovich').map(match(/a/gi))
+// Just(True)
+
+Maybe.of(null).map(match(/a/gi))
+// Nothing
+
+Maybe.of({ name: 'Boris' })
+  .map(prop('age'))
+  .map(add(10))
+// Nothing
+
+Maybe.of({ name: 'Dinah', age: 14 })
+  .map(prop('age'))
+  .map(add(10))
+// Just(24)
+```
+
+---
+
+export default Layout
+
+### Famous Functors: Either
+
+`data Either = Left a | Right b`
+
+---
+
+export default Layout
+
+## Applicative Functors
+
+<Appear>
+  <p>first</p>
+  <p>second</p>
+  <p>third</p>
+</Appear>
+
+---
+
+export default Layout
+
+## Monads
+
+<Appear>
+  <p>first</p>
+  <p>second</p>
+  <p>third</p>
+</Appear>
 
 ---
 
