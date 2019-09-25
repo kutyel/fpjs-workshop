@@ -1,6 +1,6 @@
 import { Image, Notes, Appear } from 'mdx-deck'
 import { dark } from 'mdx-deck/themes'
-import Layout, { Split } from './layout'
+import Layout, { Split, SplitRight } from './layout'
 import codeSurfer from 'prism-react-renderer/themes/nightOwl'
 export { components } from 'mdx-deck-code-surfer'
 export const theme = {
@@ -509,7 +509,165 @@ export default Layout
 
 export default Layout
 
+```js Again, another problem... 🤔
+// safeProp :: Key -> {Key: a} -> Maybe a
+const safeProp = curry((x, obj) => Maybe.of(obj[x]))
+
+// safeHead :: [a] -> Maybe a
+const safeHead = safeProp(0)
+
+// firstAddressStreet :: User -> Maybe (Maybe (Maybe Street))
+const firstAddressStreet = compose(
+  map(map(safeProp('street'))),
+  map(safeHead),
+  safeProp('addresses'),
+)
+
+firstAddressStreet({
+  addresses: [{ street: { name: 'Mulburry', number: 8402 }, postcode: 'WC2N' }],
+})
+// Maybe(Maybe(Maybe({name: 'Mulburry', number: 8402})))
+----
+* > we want to access something deeply nested...
+1:5 > this two are `getProp` in crocks...
+7:12 > Ouf.... that's a lot of fmapping!!
+17 > And we end up with a beautiful chain!!
+```
+
+---
+
+export default Layout
+
+How can we break the chain? ⛓
+
+<Appear>
+  <p>
+    <code>Monads are pointed functors that can flatten</code>
+  </p>
+  <p>
+    <strong>What is special about Monad?</strong>
+  </p>
+  <p>
+    <code>join :: Monad m => m (m a) -> m a</code>
+  </p>
+  <p>
+    <code>const join = mma => mma.join()</code>
+  </p>
+</Appear>
+
+---
+
+```js
+// join :: Monad m => m (m a) -> m a
+const join = mma => mma.join()
+
+// firstAddressStreet :: User -> Maybe Street
+const firstAddressStreet = compose(
+  join,
+  map(safeProp('street')),
+  join,
+  map(safeHead),
+  safeProp('addresses')
+)
+
+firstAddressStreet({
+  addresses: [{ street: { name: 'Mulburry', number: 8402 }, postcode: 'WC2N' }],
+})
+// Maybe({name: 'Mulburry', number: 8402})
+----
+* > we achieved what we wanted!
+16 > yay! 🎉
+6:9 > mmmmmhh... that pattern looks suspicious! 🤔
+```
+
+---
+
+export default Layout
+
+```js
+// chain :: Monad m => (a -> m b) -> m a -> m b
+const chain = curry((f, m) => m.map(f).join())
+
+// or
+
+// chain :: Monad m => (a -> m b) -> m a -> m b
+const chain = f => compose(join, map(f))
+----
+* > chain is just (join . map) 🤯
+```
+
+---
+
+export default Layout
+
+```js
+// map/join
+const firstAddressStreet = compose(
+  join,
+  map(safeProp('street')),
+  join,
+  map(safeHead),
+  safeProp('addresses'),
+)
+
+// chain
+const firstAddressStreet = compose(
+  chain(safeProp('street')),
+  chain(safeHead),
+  safeProp('addresses'),
+)
+----
+1:8 > before...
+10:15 > ...after! 🙌🏼
+```
+
+---
+
+export default Layout
+
+## A Glimpse of Math ♾
+
+---
+
+export default Split
+
+<p>
+  <h2>Associativity Law</h2>
+  <code>compose(join, map(join)) === compose(join, join)</code>
+</p>
+
+<img src={require('file-loader!./img/monad_associativity.png')} />
+
+---
+
+export default SplitRight
+
+<p>
+  <h2>Double Identity Law</h2>
+  <code>compose(join, of) === compose(join, map(of)) === id</code>
+</p>
+
+<img src={require('file-loader!./img/triangle_identity.png')} />
+
+---
+
+export default Layout
+
 ### Last exercises! 🚀🚀🚀
+
+---
+
+export default Layout
+
+### Resources:
+
+`https://crocks.dev/`
+
+`https://ramdajs.com/docs/`
+
+`https://mostly-adequate.gitbooks.io/mostly-adequate-guide/`
+
+`https://egghead.io/courses/professor-frisby-introduces-composable-functional-javascript`
 
 ---
 
