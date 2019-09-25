@@ -341,6 +341,138 @@ export default Layout
 
 export default Layout
 
+```js Houston, we have a problem! ∑
+// We can't do this because the numbers are bottled up.
+add(Box.of(2), Box.of(3))
+// NaN
+
+// Let's use our trusty map
+const BoxOfAdd2 = map(add, Box.of(2))
+// Box(add(2))
+
+Box.of(2).chain(two => Box.of(3).map(add(two)))
+----
+* > we want to apply one functor to another
+1:3 > we can't do this...
+5:7 > map is not enough 😭
+9 > we can use map AND chain! (chain = flatMap) 🙉
+```
+
+---
+
+export default Layout
+
+```js Turn 📦 into an Applicative Functor! 🚀
+/**
+ * Applicative Functors:
+ * - F(x).map(f) === F(f).ap(F(x))
+ */
+const Box = x => ({
+  ap: b => b.map(x),
+  map: f => Box(f(x)),
+  inspect: () => `Box(${x})`,
+})
+
+// `ap` is a function that can apply the function contents
+// of one functor to the value contents of another!
+----
+* > Our first applicative functor!
+6,11,12 > important!!
+```
+
+---
+
+export default Layout
+
+```js Let's see it in action!!
+Box.of(add(2)).ap(Box.of(3))
+// Box(5)
+
+// all together now
+
+Box.of(2).map(add).ap(Box.of(3))
+// Box(5)
+----
+* > now we can sum values inside Boxes!
+1, 6 > Box(3) has been set free from the jail of the nested monadic function!
+```
+
+---
+
+export default Layout
+
+```js More applicatives!
+// Remember homomorphism?
+// F.of(x).map(f) === F.of(f).ap(F.of(x))
+
+Maybe.of(add).ap(Maybe.of(2)).ap(Maybe.of(3))
+// Maybe(5)
+
+Async.of(add).ap(Async.of(2)).ap(Async.of(3))
+// Async(5)
+----
+* > what we learn applies to all valid functors/applicatives!
+4,7 > examples with Maybe and Async
+```
+
+---
+
+export default Layout
+
+```js Example usage with IO
+// $ :: String -> IO DOM
+const $ = selector => IO.of(() => document.querySelector(selector))
+
+// getVal :: String -> IO String
+const getVal = compose(map(prop('value')), $)
+
+// signIn :: String -> String -> Bool -> User
+const signIn = curry((username, password, rememberMe) => { /* signing in */ })
+
+IO.of(signIn).ap(getVal('#email')).ap(getVal('#password')).ap(IO.of(false))
+// IO({ id: 3, email: 'gg@allin.com' })
+----
+* > with ap, we can chain many side effects together!
+```
+
+---
+
+export default Layout
+
+```js Bro, Do You Even Lift?
+const liftA2 = curry((g, f1, f2) => f1.map(g).ap(f2))
+
+const liftA3 = curry((g, f1, f2, f3) => f1.map(g).ap(f2).ap(f3))
+
+// liftA4, etc
+
+// ...
+
+liftA2(add, Maybe(2), Maybe(5)) // > Maybe(7)
+
+liftA3(signIn, getVal('#email'), getVal('#password'), IO.of(false))
+----
+1:5 > yeah, we lift!
+9 > add values (arity 2)
+11 > refactored with liftA3 🧨
+```
+
+---
+
+export default Layout
+
+```js Operators
+// Haskell
+add <$> Right 2 <*> Right 3
+
+// JavaScript
+map(add, Right(2)).ap(Right(3))
+```
+
+---
+
+export default Layout
+
 ### Moar exercises! 🤸🏼‍♀️
 
 ---
