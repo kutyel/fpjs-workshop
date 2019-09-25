@@ -1,5 +1,4 @@
-import Task from 'data.task'
-import { Identity, IO, Maybe, Either, either, getProp } from 'crocks'
+import { Async, Identity, IO, Maybe, Either, either, getProp } from 'crocks'
 import { add, compose, concat, prop, map, head, toUpper, identity } from 'ramda'
 
 const { Just, Nothing } = Maybe
@@ -47,17 +46,8 @@ describe('Functors', () => {
   // Exercise 5
   test("Write a function that will getPost then toUpperCase the post's title.", () => {
     // getPost :: Int -> Future({id: Int, title: String})
-    const getPost = i =>
-      new Task((_, res) =>
-        setTimeout(
-          () =>
-            res({
-              id: i,
-              title: 'Love them futures',
-            }),
-          300
-        )
-      )
+    const getPost = id =>
+      Async((_, res) => setTimeout(() => res({ id, title: 'Love them futures' }), 300))
     const _upperTitle = compose(
       toUpper,
       prop('title')

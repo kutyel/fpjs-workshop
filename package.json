@@ -38,7 +38,6 @@
   "dependencies": {
     "accounting": "^0.4.1",
     "crocks": "^0.12.4",
-    "data.task": "^3.1.2",
     "ramda": "^0.26.1"
   },
   "jest": {
