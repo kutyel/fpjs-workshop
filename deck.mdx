@@ -64,6 +64,8 @@ export default Layout
 
 ### `Functor` is all about function application! 🤯
 
+`fmap :: Functor f => (a -> b) -> f a -> f b`
+
 <img src={require('file-loader!./img/functormap.png')} />
 
 ---
@@ -159,7 +161,7 @@ streetName({ addresses: [] })
 // > Nothing
 
 streetName({ addresses: [{ street: 'Shady Ln.', number: 4201 }] })
-// > Just('Shady Ln.')
+// > Just(Shady Ln.)
 ```
 
 ---
@@ -228,17 +230,21 @@ import Either from 'crocks/Either'
 
 const { Left, Right } = Either
 
-Either.of('rain').map(str => `b${str}`)
+Right('rain').map(str => `b${str}`)
 // Right('brain')
 
 Left('rain').map(str => `It's gonna ${str}, better bring your umbrella!`)
 // Left('rain')
 
 Either.of({ host: 'localhost', port: 80 }).map(prop('host'))
-// Right('localhost')
+// Right(localhost)
 
 Left('rolls eyes...').map(prop('host'))
 // Left('rolls eyes...')
+----
+* > some contrived examples with Either...
+8,9,14,15 > notice mapping on `Left` doesn't run the computations!
+5,6,11,12 > whereas mapping over `Right` works exactly as with `Just`.
 ```
 
 ---
@@ -377,7 +383,7 @@ const Box = x => ({
 // of one functor to the value contents of another!
 ----
 * > Our first applicative functor!
-6,11,12 > important!!
+6,11,12 > important! (`b` refers to another Box... or Functor!)
 ```
 
 ---
@@ -452,9 +458,10 @@ liftA2(add, Maybe(2), Maybe(5)) // > Maybe(7)
 
 liftA3(signIn, getVal('#email'), getVal('#password'), IO.of(false))
 ----
+* > Pointfree Style™️ strikes back!
 1:5 > yeah, we lift!
 9 > add values (arity 2)
-11 > refactored with liftA3 🧨
+11 > previous example refactored with liftA3 🧨 (arity 3)
 ```
 
 ---
@@ -530,7 +537,7 @@ firstAddressStreet({
 ----
 * > we want to access something deeply nested...
 1:5 > this two are `getProp` in crocks...
-7:12 > Ouf.... that's a lot of fmapping!!
+7:12 > Ouff.... that's a lot of fmapping!!
 17 > And we end up with a beautiful chain!!
 ```
 
@@ -554,6 +561,37 @@ How can we break the chain? ⛓
     <code>const join = mma => mma.join()</code>
   </p>
 </Appear>
+
+---
+
+export default Layout
+
+```js Turning our 📦 into a MONAD! 🐒
+/**
+ * Box, Either, Task (Async), List...
+ * F.of / pure (pointed functor) + chain (flatMap, bind, >>=)
+ *
+ * - Associativity: join(m.map(join)) === join(join(m))
+ * - Left/Right identity: join(Box.of(m)) === join(m.map(Box.of))
+ */
+const Box = x => ({
+  ap: b => b.map(x),
+  chain: f => f(x),
+  map: f => Box(f(x)),
+  inspect: () => `Box(${x})`
+})
+
+Box.of = Box
+
+//    join :: Monad m => m (m a) -> m a
+const join = m => m.chain(x => x)
+----
+* > Our first monad!
+15 > this is what we mean by "pointed functor"
+10 > here's our *magic* chain function! ⛓
+17,18 > we can also define join from outside calling chain!
+2 > Task (Folktale) = Async (Crocks)
+```
 
 ---
 
