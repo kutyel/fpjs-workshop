@@ -1,5 +1,5 @@
 import { sep } from 'path'
-import { Async, IO, Maybe, Either, either, getProp, run } from 'crocks'
+import { Async, IO, Maybe, Either, either, getProp } from 'crocks'
 import { chain, compose, identity, prop, split, last, map } from 'ramda'
 
 const { Just, Nothing } = Maybe
@@ -18,8 +18,13 @@ describe('Monads', () => {
         },
       },
     }
-    // TODO: getStreetName :: User -> Maybe String
-    const getStreetName = identity
+    // getStreetName :: User -> Maybe String
+    const getStreetName = compose(
+      chain(getProp('name')),
+      chain(getProp('street')),
+      getProp('address')
+    )
+    expect(getStreetName().equals(Nothing())).toBeTruthy()
     expect(getStreetName({}).equals(Nothing())).toBeTruthy()
     expect(getStreetName(user).equals(Maybe('Walnut St'))).toBeTruthy()
   })
@@ -27,13 +32,21 @@ describe('Monads', () => {
   // Exercise 2 🤔
   test("Use getFile to get the filename, remove the directory so it's just the file, then purely log it.", () => {
     // getFile :: IO String
-    const getFile = IO.of(() => __filename)
+    const getFile = () => IO.of(__filename)
     // pureLog :: String -> IO ()
-    const pureLog = str => IO.of(() => console.log(str))
-
-    // TODO: logFilename :: IO ()
-    const logFilename = identity
-    logFilename().run(res => expect(res).toBe('logged monads.js'))
+    const pureLog = x => IO.of(`logged ${x}`)
+    // logFilename :: IO String
+    const logFilename = compose(
+      chain(
+        compose(
+          pureLog,
+          last,
+          split(sep)
+        )
+      ),
+      getFile
+    )
+    logFilename().run(succ => expect(succ).toBe('logged monads.js'))
   })
 
   // Exercise 3 ✅
@@ -51,9 +64,17 @@ describe('Monads', () => {
           300
         )
       )
-    // TODO: getCommentsFromPost :: Int -> [Comments]
-    const getCommentsFromPost = identity
-    getCommentsFromPost(13).fork(console.log, res => {
+    // getCommentsFromPost :: Int -> Async [Comments]
+    const getCommentsFromPost = compose(
+      chain(
+        compose(
+          getComments,
+          prop('id')
+        )
+      ),
+      getPost
+    )
+    getCommentsFromPost(13).fork(console.error, res => {
       expect(map(prop('post_id'), res)).toEqual([13, 13])
       expect(map(prop('body'), res)).toEqual([
         'This book should be illegal',
@@ -62,7 +83,7 @@ describe('Monads', () => {
     })
   })
 
-  // Exercise 4 🤔
+  // Exercise 4 ✅
   test("Use validateEmail, addToMailingList, and emailBlast to implement ex4's type signature.", () => {
     //  addToMailingList :: Email -> IO([Email])
     const addToMailingList = (list => email => IO.of(() => [...list, email]))([])
@@ -70,11 +91,20 @@ describe('Monads', () => {
     const emailBlast = list => IO.of(() => `emailed: ${list.join(',')}`)
     // validateEmail :: Email -> Either String Email
     const validateEmail = x => (x.match(/\S+@\S+\.\S+/) ? Right(x) : Left('invalid email'))
-    // TODO: joinMailingList :: Email -> Either String (IO ())
-    const joinMailingList = identity
-    expect(joinMailingList('notanemail').equals(Left('invalid email'))).toBeTruthy()
-    expect(
-      joinMailingList('flaviocorpa@gmail.com').equals(Right('emailed: flaviocorpa@gmail.com'))
-    ).toBeTruthy()
+    // joinMailingList :: Email -> Either String (IO ())
+    const joinMailingList = compose(
+      either(
+        identity,
+        compose(
+          chain(emailBlast),
+          addToMailingList
+        )
+      ),
+      validateEmail
+    )
+    expect(joinMailingList('notanemail')).toBe('invalid email')
+    joinMailingList('flaviocorpa@gmail.com').run(succ =>
+      expect(succ).toBe('emailed: flaviocorpa@gmail.com')
+    )
   })
 })
