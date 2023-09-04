@@ -6,7 +6,8 @@ export { components } from 'mdx-deck-code-surfer'
 export const theme = {
   ...dark,
   codeSurfer,
-  monospace: '"Dank Mono", "Fira Code", Consolas, "Roboto Mono", monospace',
+  monospace:
+    '"Dank Mono", "Operator Mono Lig", "Operator Mono", "Fira Code", Consolas, "Roboto Mono", monospace',
   colors: {
     text: 'rgb(214, 222, 235)',
     code: 'rgb(130, 170, 255)',
@@ -94,15 +95,13 @@ Box.of = Box
 export default Layout
 
 ```js Things we can do with our Box
-Box(2).map(two => two + 2)
+Box(2).map((two) => two + 2)
 // > Box(4)
 
-Box('flamethrowers').map(s => s.toUpperCase())
+Box('flamethrowers').map((s) => s.toUpperCase())
 // > Box(FLAMETHROWERS)
 
-Box.of('bombs')
-  .map(append(' away'))
-  .map(prop('length'))
+Box.of('bombs').map(append(' away')).map(prop('length'))
 // > Box(10)
 ```
 
@@ -131,14 +130,10 @@ Maybe.of('Malkovich Malkovich').map(match(/a/gi))
 Maybe.of(null).map(match(/a/gi))
 // Nothing
 
-Maybe.of({ name: 'Boris' })
-  .map(prop('age'))
-  .map(add(10))
+Maybe.of({ name: 'Boris' }).map(prop('age')).map(add(10))
 // Nothing
 
-Maybe.of({ name: 'Dinah', age: 14 })
-  .map(prop('age'))
-  .map(add(10))
+Maybe.of({ name: 'Dinah', age: 14 }).map(prop('age')).map(add(10))
 // Just(24)
 ```
 
@@ -148,14 +143,10 @@ export default Layout
 
 ```js
 // safeHead :: [a] -> Maybe(a)
-const safeHead = xs => Maybe.of(xs[0])
+const safeHead = (xs) => Maybe.of(xs[0])
 
 // streetName :: Object -> Maybe String
-const streetName = compose(
-  map(prop('street')),
-  safeHead,
-  prop('addresses')
-)
+const streetName = compose(map(prop('street')), safeHead, prop('addresses'))
 
 streetName({ addresses: [] })
 // > Nothing
@@ -291,21 +282,18 @@ export default Layout
 // ioWindow :: IO Window
 const ioWindow = IO.of(() => window)
 
-ioWindow.map(win => win.innerWidth)
+ioWindow.map((win) => win.innerWidth)
 // IO(1430)
 
-ioWindow
-  .map(prop('location'))
-  .map(prop('href'))
-  .map(split('/'))
+ioWindow.map(prop('location')).map(prop('href')).map(split('/'))
 // IO(['http:', '', 'localhost:8000', 'blog', 'posts'])
 
 // $ :: String -> IO [DOM]
-const $ = selector => IO.of(() => document.querySelectorAll(selector))
+const $ = (selector) => IO.of(() => document.querySelectorAll(selector))
 
 $('#myDiv')
   .map(head)
-  .map(div => div.innerHTML)
+  .map((div) => div.innerHTML)
 // IO('I am some inner html')
 ```
 

@@ -39,7 +39,7 @@ const Layout = ({ children }) => (
   <Fragment>
     <Wrapper>{children}</Wrapper>
     <Footer>
-      <span>React Alicante 2019 ⚛️</span>
+      <span>React Alicante {new Date().getFullYear()} ⚛️</span>
       <span>@FlavioCorpa</span>
     </Footer>
   </Fragment>
