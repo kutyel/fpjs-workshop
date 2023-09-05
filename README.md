@@ -1,5 +1,5 @@
 <p align="center">
-    <img alt="babel" src="./lambda.png" width="100">
+    <img alt="lambda" src="./lambda.png" width="100">
 </p>
 
 # FPJS-workshop
