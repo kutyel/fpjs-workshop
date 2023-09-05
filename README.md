@@ -1,6 +1,10 @@
-# fpjs-workshop
+<p align="center">
+    <img alt="babel" src="./lambda.png" width="100">
+</p>
 
-⚡️ My workshop to teach FP principles in JavaScript
+# FPJS-workshop
+
+⚡️ My workshop to teach **functional programming** principles in JavaScript
 
 ## Installation
 
