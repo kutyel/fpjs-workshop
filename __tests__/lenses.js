@@ -1,4 +1,4 @@
-import { compose, lensPath, over, inc, dec, not } from 'ramda'
+import { pipe, lensPath, over, inc, dec, not } from 'ramda'
 
 const LIKED = 'LIKED'
 const DISLIKED = 'DISLIKED'
@@ -11,27 +11,15 @@ const initialState = [
 const reducer = (state = initialState, { type, index }) => {
   switch (type) {
     case LIKED:
-      // TODO: refactor this with lenses!
-      return [
-        ...state.slice(0, index),
-        {
-          ...state[index],
-          likes: { count: state[index].likes.count + 1 },
-          user_has_liked: true,
-        },
-        ...state.slice(index + 1),
-      ]
+      return pipe(
+        over(lensPath([index, 'likes', 'count']), inc),
+        over(lensPath([index, 'user_has_liked']), not)
+      )(state)
     case DISLIKED:
-      // TODO: refactor this with lenses!
-      return [
-        ...state.slice(0, index),
-        {
-          ...state[index],
-          likes: { count: state[index].likes.count - 1 },
-          user_has_liked: false,
-        },
-        ...state.slice(index + 1),
-      ]
+      return pipe(
+        over(lensPath([index, 'likes', 'count']), dec),
+        over(lensPath([index, 'user_has_liked']), not)
+      )(state)
     default:
       state
   }
